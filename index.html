@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signal Digital — Meer klanten, minder gedoe</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0d0d2b; color: #fff; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 60px; position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100; background: rgba(13,13,43,0.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-text { font-size: 0.85rem; font-weight: 700; color: #fff; line-height: 1.2; letter-spacing: 0.05em; }
+    .logo-text span { display: block; font-size: 0.65rem; font-weight: 400; letter-spacing: 0.15em; color: #aaa; }
+    nav ul { display: flex; gap: 32px; list-style: none; }
+    nav ul a { color: #ddd; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    nav ul a:hover { color: #fff; }
+    .nav-cta { background: #e8344a !important; color: #fff !important; padding: 10px 22px; border-radius: 8px; font-weight: 600 !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 120px 60px 80px; position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #0d0d2b 0%, #12123a 100%);
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(232,52,74,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { max-width: 580px; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,52,74,0.15); border: 1px solid rgba(232,52,74,0.4);
+      color: #e8344a; padding: 6px 16px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 28px;
+    }
+    .hero-badge::before { content: ''; width: 7px; height: 7px; background: #e8344a; border-radius: 50%; }
+    .hero h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+    .hero h1 em { font-style: normal; color: #ff6b35; }
+    .hero p { font-size: 1rem; color: #aab; line-height: 1.7; margin-bottom: 36px; max-width: 460px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary { background: #e8344a; color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; text-decoration: none; transition: background 0.2s; display: inline-block; }
+    .btn-primary:hover { background: #c92a3e; }
+    .btn-outline { border: 1.5px solid rgba(255,255,255,0.25); color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; display: inline-block; }
+    .hero-logo-big {
+      position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .hero-logo-big svg { width: 200px; height: 200px; }
+    .hero-logo-big p { font-size: 1.6rem; font-weight: 800; letter-spacing: 0.1em; color: #fff; margin: 0; }
+    .hero-logo-big span { font-size: 0.9rem; letter-spacing: 0.2em; color: #aaa; }
+
+    /* STATS */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .stat { padding: 32px 40px; border-right: 1px solid rgba(255,255,255,0.06); }
+    .stat:last-child { border-right: none; }
+    .stat h3 { font-size: 2rem; font-weight: 800; color: #e8344a; margin-bottom: 4px; }
+    .stat p { font-size: 0.85rem; color: #778; }
+
+    /* PROCESS */
+    .section { padding: 90px 60px; }
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,52,74,0.1); border: 1px solid rgba(232,52,74,0.3);
+      color: #e8344a; padding: 5px 14px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 20px;
+    }
+    .section h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; margin-bottom: 16px; }
+    .section h2 em { font-style: normal; color: #ff6b35; }
+    .section > p { color: #889; font-size: 0.95rem; line-height: 1.7; max-width: 500px; margin-bottom: 50px; }
+
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; position: relative; }
+    .process-step { padding: 28px 24px; border-right: 1px solid rgba(255,255,255,0.06); position: relative; }
+    .process-step:last-child { border-right: none; }
+    .step-num { font-size: 2.5rem; font-weight: 800; color: rgba(232,52,74,0.2); margin-bottom: 12px; }
+    .step-circle {
+      width: 36px; height: 36px; background: #e8344a; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; margin-bottom: 14px;
+    }
+    .process-step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .process-step p { font-size: 0.83rem; color: #889; line-height: 1.6; }
+
+    /* ABOUT */
+    .about { padding: 90px 60px; background: #f8f8f8; color: #111; }
+    .about .section-badge { background: rgba(232,52,74,0.08); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; margin-bottom: 24px; color: #111; }
+    .about h2 em { font-style: normal; color: #ff6b35; }
+    .about-cards { display: flex; flex-direction: column; gap: 14px; }
+    .about-card {
+      background: #fff; border: 1px solid #eee; border-radius: 12px;
+      padding: 18px 20px; position: relative; overflow: hidden;
+    }
+    .about-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: #e8344a;
+    }
+    .about-card h5 { font-size: 0.78rem; font-weight: 700; color: #e8344a; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .about-card p { font-size: 0.85rem; color: #556; line-height: 1.6; }
+    .about-right p { font-size: 0.93rem; color: #445; line-height: 1.8; margin-bottom: 16px; }
+    .about-right blockquote {
+      border-left: 3px solid #e8344a; padding-left: 18px;
+      font-style: italic; color: #334; font-size: 0.9rem; line-height: 1.7; margin: 20px 0;
+    }
+    .about-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #e8344a);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 20px;
+    }
+
+    /* FEATURES */
+    .features { padding: 90px 60px; background: #0d0d2b; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 28px 24px; transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(232,52,74,0.4); }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+    .feature-card p { font-size: 0.85rem; color: #778; line-height: 1.6; }
+    .feature-icon {
+      width: 42px; height: 42px; background: rgba(232,52,74,0.12);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 1.2rem;
+    }
+
+    /* CTA BANNER */
+    .cta-banner {
+      background: #e8344a; padding: 80px 60px; text-align: center;
+    }
+    .cta-banner h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; margin-bottom: 12px; }
+    .cta-banner p { font-size: 0.95rem; opacity: 0.85; margin-bottom: 30px; }
+    .btn-white {
+      background: #fff; color: #e8344a; padding: 14px 32px;
+      border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.95rem;
+      display: inline-block; transition: transform 0.2s;
+    }
+    .btn-white:hover { transform: scale(1.03); }
+
+    /* CONTACT */
+    .contact { padding: 90px 60px; background: #09091f; }
+    .contact-badge { color: #e8344a; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+    .contact h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; margin-bottom: 16px; }
+    .contact-info { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
+    .contact-info-item { display: flex; align-items: center; gap: 14px; }
+    .contact-info-icon {
+      width: 38px; height: 38px; background: rgba(232,52,74,0.12);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .contact-info-item p { font-size: 0.85rem; color: #aab; }
+    .contact-info-item strong { display: block; font-size: 0.8rem; color: #667; margin-bottom: 2px; }
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+    .contact-form input, .contact-form textarea {
+      width: 100%; padding: 13px 16px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none;
+      font-family: inherit;
+    }
+    .contact-form input:focus, .contact-form textarea:focus { border-color: #e8344a; }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: #445; }
+    .contact-form textarea { height: 120px; resize: none; }
+    .contact-form small { font-size: 0.75rem; color: #556; }
+
+    /* FOOTER */
+    footer {
+      padding: 24px 60px; background: #06060f;
+      text-align: center; color: #334; font-size: 0.8rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ========= CHAT WIDGET ========= */
+    #sd-chat-btn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 58px; height: 58px; background: #e8344a; border-radius: 50%;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(232,52,74,0.5); z-index: 9998;
+      transition: transform 0.2s, background 0.2s;
+    }
+    #sd-chat-btn:hover { transform: scale(1.08); background: #c92a3e; }
+    #sd-chat-btn svg { width: 26px; height: 26px; fill: #fff; }
+    #sd-chat-bubble {
+      position: fixed; bottom: 100px; right: 28px;
+      background: #12122e; border: 1px solid rgba(232,52,74,0.35);
+      border-radius: 16px; width: 340px; max-height: 520px;
+      display: none; flex-direction: column; z-index: 9999; overflow: hidden;
+      box-shadow: 0 12px 50px rgba(0,0,0,0.6);
+    }
+    #sd-chat-bubble.open { display: flex; }
+    .chat-header {
+      background: #e8344a; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .chat-header-left { display: flex; align-items: center; gap: 10px; }
+    .chat-header-left svg { width: 22px; height: 22px; fill: #fff; opacity: 0.9; }
+    .chat-header h4 { font-size: 0.95rem; font-weight: 700; color: #fff; margin: 0; }
+    .chat-header p { font-size: 0.72rem; color: rgba(255,255,255,0.75); margin: 0; }
+    .chat-close { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; opacity: 0.8; line-height: 1; }
+    .chat-close:hover { opacity: 1; }
+    #chat-login { padding: 24px 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; }
+    #chat-login p { font-size: 0.85rem; color: #aab; line-height: 1.5; }
+    #chat-login input {
+      width: 100%; padding: 11px 14px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none;
+    }
+    #chat-login input:focus { border-color: #e8344a; }
+    #chat-login input::placeholder { color: #556; }
+    #chat-login button {
+      width: 100%; padding: 12px; background: #e8344a; color: #fff;
+      border: none; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    }
+    #chat-login button:hover { background: #c92a3e; }
+    #login-error { color: #ff6b6b; font-size: 0.8rem; display: none; }
+    #chat-body { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+    #chat-messages { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; max-height: 320px; }
+    .cmsg { max-width: 80%; padding: 9px 13px; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; word-break: break-word; }
+    .cmsg.mine { align-self: flex-end; background: #e8344a; color: #fff; border-bottom-right-radius: 3px; }
+    .cmsg.other { align-self: flex-start; background: rgba(255,255,255,0.08); color: #eee; border-bottom-left-radius: 3px; }
+    .cmsg .msender { font-size: 0.7rem; font-weight: 700; margin-bottom: 3px; opacity: 0.7; }
+    .cmsg.mine .msender { display: none; }
+    #chat-input-row { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.07); }
+    #chat-input-row input {
+      flex: 1; padding: 9px 12px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: #fff; font-size: 0.85rem; outline: none;
+    }
+    #chat-input-row input:focus { border-color: #e8344a; }
+    #chat-input-row input::placeholder { color: #556; }
+    #chat-send {
+      background: #e8344a; border: none; border-radius: 50%; width: 36px; height: 36px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    #chat-send:hover { background: #c92a3e; }
+    #chat-send svg { width: 16px; height: 16px; fill: #fff; }
+    #chat-user-bar { padding: 6px 14px; font-size: 0.72rem; color: #667; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      nav ul { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-logo-big { display: none; }
+      .section, .features, .contact { padding: 60px 24px; }
+      .about { padding: 60px 24px; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 36px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .cta-banner { padding: 60px 24px; }
+      footer { padding: 20px 24px; }
+      #sd-chat-bubble { width: calc(100vw - 40px); right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <svg width="38" height="38" viewBox="0 0 60 60" fill="none">
+      <path d="M10 38 Q20 10 30 30 Q40 50 50 22" stroke="url(#gn)" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <defs>
+        <linearGradient id="gn" x1="10" y1="30" x2="50" y2="30" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6366f1"/>
+          <stop offset="50%" stop-color="#a855f7"/>
+          <stop offset="100%" stop-color="#ff6b35"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="logo-text">SIGNAL<span>DIGITAL</span></div>
+  </a>
+  <ul>
+    <li><a href="#process">Servicios</a></li>
+    <li><a href="#about">Sobre Mij</a></li>
+    <li><a href="#contact">Contacto</a></li>
+    <li><a href="#contact" class="nav-cta">Gratis gesprek →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">DIGITALE GROEI VOOR AMBITIEUZE BEDRIJVEN</div>
+    <h1>Meer klanten<br><em>minder gedoe.</em></h1>
+    <p>Sitios web delgados, publicidad efectiva (SEO / SEA) y automatización de las páginas web más grandes. Signal Digital indica el canal digital del usuario.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Kennismakingsgesprek gratis →</a>
+      <a href="#process" class="btn-outline">Bekijk diensten</a>
+    </div>
+  </div>
+  <div class="hero-logo-big">
+    <svg viewBox="0 0 200 200" fill="none">
+      <path d="M30 130 Q65 40 100 100 Q135 160 170 70" stroke="url(#gh)" stroke-width="22" stroke-linecap="round" fill="none"/>
+      <defs>
+        <linearGradient id="gh" x1="30" y1="100" x2="170" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6366f1"/>
+          <stop offset="50%" stop-color="#a855f7"/>
+          <stop offset="100%" stop-color="#ff6b35"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <p>SIGNAL</p>
+    <span>DIGITAL</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><h3>50+</h3><p>Clientes satisfechos</p></div>
+  <div class="stat"><h3>3x</h3><p>Meer online zichtbaarheid</p></div>
+  <div class="stat"><h3>100%</h3><p>Maatwerk aanpak</p></div>
+  <div class="stat"><h3>24u</h3><p>Responstijd gegarandeerd</p></div>
+</div>
+
+<!-- PROCESS -->
+<section class="section" id="process">
+  <div class="section-badge">✦ WERKWIJZE</div>
+  <h2>Kennismaken</h2>
+  <p>We starten met een gratis kennismaking. We luisteren naar jouw verhaal en brengen samen in kaart waar je wilt landen.</p>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-circle">1</div>
+      <h4>Kennismaken</h4>
+      <p>We starten met een gratis kennismaking. We luisteren naar jouw verhaal en brengen samen in kaart waar je wilt landen.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-circle">2</div>
+      <h4>Aan de slag</h4>
+      <p>Geen plan ouderlijk? Geen plan. We meten voor jou en de slag, jij blijft betrokken en het stap voor stap het resultaat groeit.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-circle">3</div>
+      <h4>Plan & strategie</h4>
+      <p>We kijken samen op aanpak die bij jouw bedrijf past. Je krijgt een concreet stappenplan, zodat je precies weet waar je aan toe bent.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-circle">4</div>
+      <h4>Groeien & optimaliseren</h4>
+      <p>Na de launching blijven we monitoren en verbeteren. Zo zorgen we ervoor dat jouw online kanalen blijven groeien en steeds meer uit je marketing haalt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="section-badge">✦ SOBRE MIJ</div>
+  <div class="about-grid">
+    <div class="about-left">
+      <h2>Geen groot bureau.<br><em>Gewoon Simone.</em></h2>
+      <div class="about-cards">
+        <div class="about-card">
+          <h5>⚡ SNEL SCHAKELEN</h5>
+          <p>Geen groot bureau met verschillende contactpersonen. Je krijgt Gewoon Simone — iemand die snel schakelt, eerlijk communiceert en meedenkt alsof ze onderdeel van jouw bedrijf is.</p>
+        </div>
+        <div class="about-card">
+          <h5>🎯 RESULTAAT CENTRAAL</h5>
+          <p>Mijn doel is om zo snel mogelijk naar te schrijven. Mijn doel is het doen wat nodig is om resultaat te behalen.</p>
+        </div>
+        <div class="about-card">
+          <h5>🤝 KORTE LIJNTJES</h5>
+          <p>Ik geloof in korte lijntjes, duidelijke afspraken en transparantie. Als iets werkt, vertel ik dat. Als iets niet werkt, vertel ik dat ook.</p>
+        </div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="about-avatar">S</div>
+      <p>Ik ben gefascineerd geraakt door de mogelijkheden van AI en digitale automatisering. Niet omdat AI / technologie mensen moet vervangen — maar omdat het ondernemers helpt om efficiënter te werken en betere resultaten te behalen.</p>
+      <p>Daarvoor wil ik niet alleen op technologie. AI is een krachtig hulpmiddel, maar uiteindelijk zijn het creativiteit en persoonlijke inzichten die het verschil maken.</p>
+      <blockquote>"En precies daar wil ik met Signal Digital jou bij helpen."</blockquote>
+      <a href="#contact" class="btn-primary" style="margin-top:10px;">Plan een gesprek →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-badge" style="margin-bottom:20px;">✦ SERVICIOS</div>
+  <h2 style="font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;margin-bottom:40px;">Lo que ofrezco</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Websites op maat</h3>
+      <p>Snelle, mooie en conversiegerichte websites die jouw merk versterken en bezoekers omzetten in klanten.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>SEO / SEA</h3>
+      <p>Meer zichtbaarheid in Google. Organisch en betaald verkeer gecombineerd voor maximaal resultaat.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>IA y automatización</h3>
+      <p>Automatización inteligente para que tu negocio funcione de manera más eficiente y rentable.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>Strategie & content</h3>
+      <p>Een duidelijke digitale strategie met content die aansluit bij jouw doelgroep en doelen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <h2>Klaar om online te groeien?</h2>
+  <p>Plan vandaag nog een gratis kennismakingsgesprek. Geen verplichtingen, wel concrete inzichten voor jouw bedrijf.</p>
+  <a href="#contact" class="btn-white">Gratis gesprek inplannen →</a>
+</div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-badge contact-badge">✦ CONTACT</div>
+  <div class="contact-grid">
+    <div>
+      <h2>Laten we eens kennismaken</h2>
+      <p style="color:#889;font-size:0.9rem;line-height:1.7;margin-top:12px;">Vul het formulier in of neem direct contact op. Ik reageer altijd binnen één werkdag.</p>
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">✉️</div>
+          <div><strong>E-MAIL</strong><p>simone@signaldigital.nl</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📞</div>
+          <div><strong>TELEFOON</strong><p>+31 6 23 29 10 08</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div><strong>LOCATIE</strong><p>Nederland</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <input type="text" placeholder="Jouw naam — Jan de Vries"/>
+      <input type="email" placeholder="jan@jouwbedrijf.nl"/>
+      <textarea placeholder="Vertel iets over jouw bedrijf en wat je wilt bereiken..."></textarea>
+      <button class="btn-primary" style="border:none;cursor:pointer;text-align:center;">Stuur bericht →</button>
+      <small>Ik reageer altijd binnen één werkdag.</small>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Signal Digital — Digitale groei voor ambitieuze bedrijven · Nederland
+</footer>
+
+<!-- CHAT BUTTON -->
+<button id="sd-chat-btn" onclick="toggleChat()" title="Chat met ons">
+  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+</button>
+
+<!-- CHAT BUBBLE -->
+<div id="sd-chat-bubble">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      <div><h4>Signal Digital</h4><p>Chat en vivo · Solo clientes</p></div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">×</button>
+  </div>
+  <div id="chat-login">
+    <p>Acceso exclusivo para clientes de Signal Digital.</p>
+    <input type="text" id="inp-nombre" placeholder="Tu nombre..."/>
+    <input type="password" id="inp-pass" placeholder="Contraseña..."/>
+    <div id="login-error">Contraseña incorrecta.</div>
+    <button onclick="entrarChat()">Entrar al chat</button>
+  </div>
+  <div id="chat-body">
+    <div id="chat-user-bar">Conectado como: <strong id="chat-nombre-display"></strong></div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-row">
+      <input type="text" id="chat-msg-input" placeholder="Escribe un mensaje..."/>
+      <button id="chat-send" onclick="enviarMensaje()">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCkZLRYnO54VG03jYeQau_KptZPrBt-cdw",
+    authDomain: "chatfree-82d45.firebaseapp.com",
+    projectId: "chatfree-82d45",
+    storageBucket: "chatfree-82d45.firebasestorage.app",
+    messagingSenderId: "588430228015",
+    appId: "1:588430228015:web:048cf2ab34428649b3a4da"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const PASSWORD = "signal2026";
+  let miNombre = "";
+  let escuchando = false;
+
+  window.toggleChat = function() {
+    document.getElementById("sd-chat-bubble").classList.toggle("open");
+  };
+
+  window.entrarChat = function() {
+    const nombre = document.getElementById("inp-nombre").value.trim();
+    const pass = document.getElementById("inp-pass").value.trim();
+    const error = document.getElementById("login-error");
+    if (!nombre) { error.textContent = "Escribe tu nombre."; error.style.display = "block"; return; }
+    if (pass !== PASSWORD) { error.textContent = "Contraseña incorrecta."; error.style.display = "block"; return; }
+    error.style.display = "none";
+    miNombre = nombre;
+    document.getElementById("chat-nombre-display").textContent = nombre;
+    document.getElementById("chat-login").style.display = "none";
+    document.getElementById("chat-body").style.display = "flex";
+    document.getElementById("chat-msg-input").focus();
+    if (!escuchando) {
+      escuchando = true;
+      const q = query(collection(db, "signal-mensajes"), orderBy("timestamp", "asc"));
+      onSnapshot(q, (snap) => {
+        const c = document.getElementById("chat-messages");
+        c.innerHTML = "";
+        snap.forEach((doc) => {
+          const d = doc.data();
+          const div = document.createElement("div");
+          div.className = "cmsg " + (d.nombre === miNombre ? "mine" : "other");
+          div.innerHTML = `<div class="msender">${d.nombre}</div><div>${d.texto}</div>`;
+          c.appendChild(div);
+        });
+        c.scrollTop = c.scrollHeight;
+      });
+    }
+  };
+
+  window.enviarMensaje = async function() {
+    const input = document.getElementById("chat-msg-input");
+    const texto = input.value.trim();
+    if (!texto) return;
+    input.value = "";
+    await addDoc(collection(db, "signal-mensajes"), { texto, nombre: miNombre, timestamp: serverTimestamp() });
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const bubble = document.getElementById("sd-chat-bubble");
+    const loginVisible = document.getElementById("chat-login").style.display !== "none";
+    if (bubble.classList.contains("open") && loginVisible) window.entrarChat();
+    else window.enviarMensaje();
+  });
+</script>
+</body>
+</html>
